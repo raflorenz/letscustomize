@@ -50,8 +50,7 @@ Current ADV 150 mapping (`data/motorcycles/honda-adv-150.ts`):
 | Part | Material names |
 |---|---|
 | Front Fairing | `paint_front`, `<auto>8` |
-| Side Panels | `paint_side` |
-| Rear Cowl | `paint_rear` |
+| Side Panels (incl. rear cowl) | `paint_side`, `paint_rear` |
 | Panel Accents (incl. rims) | `<auto>17` |
 
 Yamaha NMAX (`data/motorcycles/yamaha-nmax.ts`): primary GLB is "Nmax Motorbike" by muhecsad from **Sketchfab** (uid `b4754cbe95fb4c39be1524300e93833b`, **CC-BY-NC-SA-4.0** — credit required, NO commercial use; credit text lives in the data file). It has properly-authored PBR materials, so the config sets `sanitizeMaterials: false` — the SketchUp fix-up pass would destroy them. Parts are cleanly material-separated (verified with `scripts/rainbow-debug.mjs`); `split-nmax-v2.mjs` only renames materials:
