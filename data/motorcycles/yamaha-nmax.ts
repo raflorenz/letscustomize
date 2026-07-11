@@ -75,7 +75,7 @@ export const yamahaNmax: MotorcycleConfig = {
       // paint_* materials are created by scripts/split-nmax-v2.mjs (primary)
       // and scripts/split-nmax.mjs (clay fallback)
       materialNames: ["paint_body"],
-      defaultColor: "#1b2a52",
+      defaultColor: "#17171c",
       defaultFinish: "gloss",
       category: "fairing",
     },
@@ -84,8 +84,8 @@ export const yamahaNmax: MotorcycleConfig = {
       label: "Wheel Rims",
       meshNames: [],
       materialNames: ["paint_rims", "paint_rims_rear"],
-      defaultColor: "#a8a9ad",
-      defaultFinish: "metallic",
+      defaultColor: "#eceae4",
+      defaultFinish: "gloss",
       category: "accent",
     },
     {
