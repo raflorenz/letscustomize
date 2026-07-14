@@ -11,37 +11,38 @@ interface ColorPickerProps {
 export function ColorPicker({ value, presets, onChange }: ColorPickerProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {presets.map((preset) => (
-        <button
-          key={preset.id}
-          onClick={() => onChange(preset.hex)}
-          title={preset.name}
-          aria-label={preset.name}
-          className="h-9 w-9 rounded-full border-2 transition-transform hover:scale-110"
-          style={{
-            backgroundColor: preset.hex,
-            borderColor:
-              value.toLowerCase() === preset.hex.toLowerCase()
-                ? "#3b82f6"
-                : "rgba(0,0,0,0.08)",
-            boxShadow:
-              value.toLowerCase() === preset.hex.toLowerCase()
-                ? "0 0 0 2px rgba(59,130,246,0.35)"
-                : "none",
-          }}
-        />
-      ))}
+      {presets.map((preset) => {
+        const active = value.toLowerCase() === preset.hex.toLowerCase();
+        return (
+          <button
+            key={preset.id}
+            onClick={() => onChange(preset.hex)}
+            title={preset.name}
+            aria-label={preset.name}
+            className="h-9 w-9 rounded-full transition-transform hover:scale-110"
+            style={{
+              backgroundColor: preset.hex,
+              boxShadow: active
+                ? "inset 0 0 0 1px var(--ring-inset), 0 0 0 2px var(--swatch-ring), 0 0 0 4px var(--accent)"
+                : "inset 0 0 0 1px var(--ring-inset)",
+            }}
+          />
+        );
+      })}
 
       {/* Custom color */}
       <label
-        className="relative flex h-9 cursor-pointer items-center gap-2 rounded-full border border-dashed border-gray-300 pl-1 pr-3 text-xs text-gray-500 transition-colors hover:border-gray-400"
+        className="relative flex h-9 cursor-pointer items-center gap-2 rounded-full border border-dashed border-[var(--dash)] pl-[5px] pr-[13px] font-mono text-[11px] text-dim transition-colors hover:border-[var(--dash-hover)]"
         title="Custom color"
       >
         <span
-          className="h-6 w-6 rounded-full ring-1 ring-black/10"
-          style={{ backgroundColor: value }}
+          className="h-[26px] w-[26px] rounded-full"
+          style={{
+            backgroundColor: value,
+            boxShadow: "inset 0 0 0 1px var(--ring-inset)",
+          }}
         />
-        <span className="font-mono">{value}</span>
+        {value}
         <input
           type="color"
           value={value}

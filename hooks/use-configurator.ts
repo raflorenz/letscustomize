@@ -20,8 +20,9 @@ export function useConfigurator() {
     selectPart: store.selectPart,
     setPartColor: store.setPartColor,
     setPartFinish: store.setPartFinish,
-    applyToAllFairings: store.applyToAllFairings,
+    applyLivery: store.applyLivery,
     resetToDefaults: store.resetToDefaults,
+    showToast: store.showToast,
     modelLoaded: store.modelLoaded,
   };
 }

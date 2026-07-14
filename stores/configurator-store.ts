@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type {
   FinishId,
   HexColor,
+  LiveryPreset,
   MotorcycleConfig,
   PartCustomization,
 } from "@/types/configurator";
@@ -20,19 +21,26 @@ function defaultCustomizations(
   return customizations;
 }
 
+export type Theme = "dark" | "light";
+
 interface ConfiguratorState {
   currentMotorcycle: MotorcycleConfig | null;
   partCustomizations: Record<string, PartCustomization>;
   selectedPartId: string | null;
   modelLoaded: boolean;
+  theme: Theme;
+  /** id bumps on every showToast so repeat messages retrigger the popup */
+  toast: { id: number; text: string } | null;
 
   setMotorcycle: (config: MotorcycleConfig) => void;
   selectPart: (partId: string | null) => void;
   setPartColor: (partId: string, color: HexColor) => void;
   setPartFinish: (partId: string, finish: FinishId) => void;
-  applyToAllFairings: (color: HexColor, finish: FinishId) => void;
+  applyLivery: (livery: LiveryPreset) => void;
   resetToDefaults: () => void;
   setModelLoaded: (loaded: boolean) => void;
+  setTheme: (theme: Theme) => void;
+  showToast: (text: string) => void;
 }
 
 export const useConfiguratorStore = create<ConfiguratorState>((set, get) => ({
@@ -40,6 +48,8 @@ export const useConfiguratorStore = create<ConfiguratorState>((set, get) => ({
   partCustomizations: {},
   selectedPartId: null,
   modelLoaded: false,
+  theme: "dark",
+  toast: null,
 
   setMotorcycle: (config) =>
     set({
@@ -67,15 +77,16 @@ export const useConfiguratorStore = create<ConfiguratorState>((set, get) => ({
       },
     })),
 
-  applyToAllFairings: (color, finish) => {
+  applyLivery: (livery) => {
     const { currentMotorcycle, partCustomizations } = get();
     if (!currentMotorcycle) return;
 
-    const updated = { ...partCustomizations };
+    const updated: Record<string, PartCustomization> = {};
     for (const part of currentMotorcycle.parts) {
-      if (part.category === "fairing") {
-        updated[part.id] = { ...updated[part.id], color, finish };
-      }
+      const zone = livery.zones[part.id];
+      updated[part.id] = zone
+        ? { partId: part.id, color: zone.color, finish: zone.finish }
+        : partCustomizations[part.id];
     }
     set({ partCustomizations: updated });
   },
@@ -87,4 +98,9 @@ export const useConfiguratorStore = create<ConfiguratorState>((set, get) => ({
   },
 
   setModelLoaded: (loaded) => set({ modelLoaded: loaded }),
+
+  setTheme: (theme) => set({ theme }),
+
+  showToast: (text) =>
+    set((state) => ({ toast: { id: (state.toast?.id ?? 0) + 1, text } })),
 }));

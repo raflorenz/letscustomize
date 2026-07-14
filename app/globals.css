@@ -1,26 +1,97 @@
 @import "tailwindcss";
 
+/* Design B "Showroom" theme — dark is the default, light overrides via
+   html[data-theme="light"] (set pre-hydration by the script in layout.tsx). */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-body: #0c0d10;
+  --panel: #131418;
+  --panel-alt: #101115;
+  --text: #f0efec;
+  --text-dim: #8b8d94;
+  --text-mid: #b9b7b1;
+  --text-soft: #d7d5d0;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --fill-hover: rgba(255, 255, 255, 0.08);
+  --fill-active: rgba(255, 255, 255, 0.06);
+  --ring-inset: rgba(255, 255, 255, 0.18);
+  --dash: rgba(255, 255, 255, 0.25);
+  --dash-hover: rgba(255, 255, 255, 0.5);
+  --btn-bg: rgba(255, 255, 255, 0.06);
+  --btn-border: rgba(255, 255, 255, 0.12);
+  --btn-hover: rgba(255, 255, 255, 0.14);
+  --dotted: rgba(255, 255, 255, 0.15);
+  --hint: rgba(255, 255, 255, 0.35);
+  --vignette: rgba(0, 0, 0, 0.5);
+  --swatch-ring: #131418;
+  --scroll: rgba(255, 255, 255, 0.12);
+  --accent: oklch(0.8 0.13 85);
+  --accent-ink: #16150f;
+}
+
+[data-theme="light"] {
+  --bg-body: #f7f6f4;
+  --panel: #ffffff;
+  --panel-alt: #f7f6f4;
+  --text: #1c1a17;
+  --text-dim: #8a857c;
+  --text-mid: #6f6a61;
+  --text-soft: #4a463f;
+  --line: #e8e5df;
+  --line-strong: #e0dcd4;
+  --fill-hover: #f4f2ee;
+  --fill-active: #fdf7f4;
+  --ring-inset: rgba(0, 0, 0, 0.12);
+  --dash: #d5d1c8;
+  --dash-hover: #a8a29a;
+  --btn-bg: rgba(255, 255, 255, 0.9);
+  --btn-border: #e8e5df;
+  --btn-hover: #ffffff;
+  --dotted: #e8e5df;
+  --hint: #6f6a61;
+  --vignette: rgba(0, 0, 0, 0.05);
+  --swatch-ring: #ffffff;
+  --scroll: rgba(0, 0, 0, 0.15);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-body: var(--bg-body);
+  --color-panel: var(--panel);
+  --color-panel-alt: var(--panel-alt);
+  --color-ink: var(--text);
+  --color-dim: var(--text-dim);
+  --color-mid: var(--text-mid);
+  --color-soft: var(--text-soft);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --font-sans: var(--font-archivo);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: var(--bg-body);
+  color: var(--text);
+  font-family: var(--font-archivo), Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scroll);
+  border-radius: 4px;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

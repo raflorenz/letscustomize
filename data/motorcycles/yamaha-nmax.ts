@@ -20,6 +20,7 @@ import type { MotorcycleConfig } from "@/types/configurator";
 export const yamahaNmax: MotorcycleConfig = {
   id: "yamaha-nmax",
   name: "Yamaha NMAX",
+  modelCode: "NMAX 155",
   modelPath: "/models/yamaha-nmax.glb",
   // The Sketchfab GLB has properly-authored PBR materials — do not run the
   // SketchUp-export fix-up over them.
@@ -33,6 +34,9 @@ export const yamahaNmax: MotorcycleConfig = {
       metalness: 0,
       opacity: 0.3,
     },
+    // primary GLB: split-nmax-v2.mjs renamed Material.023 to paint_seat, but
+    // it is actually an engine-side cover, not the saddle — pin it dark
+    "paint_seat": { color: "#232327", roughness: 0.7, metalness: 0.4 },
 
     // --- clay fallback GLB only (harmless no-ops for the primary model)
     "paint_front": { color: "#1d1d22", roughness: 0.55, metalness: 0.3 },
@@ -84,7 +88,7 @@ export const yamahaNmax: MotorcycleConfig = {
       label: "Wheel Rims",
       meshNames: [],
       materialNames: ["paint_rims", "paint_rims_rear"],
-      defaultColor: "#eceae4",
+      defaultColor: "#8f1f2a",
       defaultFinish: "gloss",
       category: "accent",
     },
@@ -92,8 +96,10 @@ export const yamahaNmax: MotorcycleConfig = {
       id: "seat",
       label: "Seat",
       meshNames: [],
-      materialNames: ["paint_seat"],
-      defaultColor: "#232327",
+      // the actual saddle material in the primary GLB (paint_seat is a
+      // mis-named engine cover, see materialOverrides above)
+      materialNames: ["Mesh_0093.rip"],
+      defaultColor: "#17171c",
       defaultFinish: "matte",
       category: "accent",
     },
@@ -107,5 +113,58 @@ export const yamahaNmax: MotorcycleConfig = {
     { id: "mint-green", name: "Mint Green", hex: "#7fae9d" },
     { id: "sunset-orange", name: "Sunset Orange", hex: "#cc5500" },
     { id: "gunmetal-gray", name: "Gunmetal Gray", hex: "#4b4f54" },
+  ],
+  liveries: [
+    {
+      id: "factory-black",
+      name: "Factory Black",
+      tag: "OEM",
+      // matches the parts' default colors/finishes, so Reset == this livery
+      zones: {
+        "main-body": { color: "#17171c", finish: "gloss" },
+        "wheel-rims": { color: "#8f1f2a", finish: "gloss" },
+        "seat": { color: "#17171c", finish: "matte" },
+      },
+    },
+    {
+      id: "prestige",
+      name: "Prestige",
+      tag: "SHOP",
+      zones: {
+        "main-body": { color: "#1b2a52", finish: "metallic" },
+        "wheel-rims": { color: "#a8a9ad", finish: "satin" },
+        "seat": { color: "#232327", finish: "matte" },
+      },
+    },
+    {
+      id: "mint-runner",
+      name: "Mint Runner",
+      tag: "SHOP",
+      zones: {
+        "main-body": { color: "#7fae9d", finish: "gloss" },
+        "wheel-rims": { color: "#eceae4", finish: "gloss" },
+        "seat": { color: "#232327", finish: "matte" },
+      },
+    },
+    {
+      id: "street-heat",
+      name: "Street Heat",
+      tag: "SHOP",
+      zones: {
+        "main-body": { color: "#8f1f2a", finish: "matte" },
+        "wheel-rims": { color: "#17171c", finish: "matte" },
+        "seat": { color: "#232327", finish: "matte" },
+      },
+    },
+    {
+      id: "chrome-nights",
+      name: "Chrome Nights",
+      tag: "SHOP",
+      zones: {
+        "main-body": { color: "#17171c", finish: "gloss" },
+        "wheel-rims": { color: "#c8cbd0", finish: "chrome" },
+        "seat": { color: "#232327", finish: "matte" },
+      },
+    },
   ],
 };

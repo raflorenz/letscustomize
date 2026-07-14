@@ -3,6 +3,7 @@ import type { MotorcycleConfig } from "@/types/configurator";
 export const hondaAdv150: MotorcycleConfig = {
   id: "honda-adv-150",
   name: "Honda ADV",
+  modelCode: "ADV 150",
   modelPath: "/models/honda-adv-150.glb",
   modelYaw: Math.PI,
   // Fixed materials for the GLB (SketchUp export ships flat 0.5/0.5 PBR values)
@@ -64,5 +65,57 @@ export const hondaAdv150: MotorcycleConfig = {
     { id: "forest-green", name: "Forest Green", hex: "#2d5a3d" },
     { id: "burnt-orange", name: "Burnt Orange", hex: "#cc5500" },
     { id: "gunmetal-gray", name: "Gunmetal Gray", hex: "#4b4f54" },
+  ],
+  liveries: [
+    {
+      id: "factory-red",
+      name: "Factory Red",
+      tag: "OEM",
+      zones: {
+        "fairing-front": { color: "#b02330", finish: "gloss" },
+        "side-panels": { color: "#b02330", finish: "gloss" },
+        "panel-accents": { color: "#a8a9ad", finish: "gloss" },
+      },
+    },
+    {
+      id: "stealth",
+      name: "Stealth",
+      tag: "SHOP",
+      zones: {
+        "fairing-front": { color: "#17171c", finish: "matte" },
+        "side-panels": { color: "#17171c", finish: "matte" },
+        "panel-accents": { color: "#4b4f54", finish: "satin" },
+      },
+    },
+    {
+      id: "sunset-gp",
+      name: "Sunset GP",
+      tag: "SHOP",
+      zones: {
+        "fairing-front": { color: "#cc5500", finish: "gloss" },
+        "side-panels": { color: "#17171c", finish: "matte" },
+        "panel-accents": { color: "#f2f1ec", finish: "gloss" },
+      },
+    },
+    {
+      id: "ice-runner",
+      name: "Ice Runner",
+      tag: "SHOP",
+      zones: {
+        "fairing-front": { color: "#a8a9ad", finish: "chrome" },
+        "side-panels": { color: "#1b2a52", finish: "metallic" },
+        "panel-accents": { color: "#c8cbd0", finish: "chrome" },
+      },
+    },
+    {
+      id: "moss-club",
+      name: "Moss Club",
+      tag: "SHOP",
+      zones: {
+        "fairing-front": { color: "#2d5a3d", finish: "satin" },
+        "side-panels": { color: "#f2f1ec", finish: "gloss" },
+        "panel-accents": { color: "#17171c", finish: "matte" },
+      },
+    },
   ],
 };

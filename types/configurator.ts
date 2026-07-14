@@ -14,6 +14,8 @@ export interface FinishPreset {
   id: FinishId;
   name: string;
   description: string;
+  /** Shop price per painted part, USD */
+  price: number;
   roughness: number;
   metalness: number;
   clearcoat: number;
@@ -39,9 +41,25 @@ export interface MaterialOverride {
   opacity?: number;
 }
 
+export interface LiveryZone {
+  color: HexColor;
+  finish: FinishId;
+}
+
+export interface LiveryPreset {
+  id: string;
+  name: string;
+  /** Small badge shown next to the livery name (e.g. "OEM", "SHOP") */
+  tag: string;
+  /** Per-part paint, keyed by part id — should cover every part */
+  zones: Record<string, LiveryZone>;
+}
+
 export interface MotorcycleConfig {
   id: string;
   name: string;
+  /** Short model code shown under the name in the viewport (e.g. "ADV 150") */
+  modelCode?: string;
   /** Path to a GLB file — used when the model ships as an asset */
   modelPath?: string;
   /** Extra yaw (radians) applied after normalization so the bike faces +X */
@@ -58,6 +76,8 @@ export interface MotorcycleConfig {
   materialOverrides?: Record<string, MaterialOverride>;
   parts: PartConfig[];
   colorPresets: ColorPreset[];
+  /** Curated color/finish combos offered by the shop */
+  liveries?: LiveryPreset[];
 }
 
 export interface PartCustomization {
