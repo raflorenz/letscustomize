@@ -13,6 +13,7 @@ import type { MotorcycleConfig } from "@/types/configurator";
 export const hondaPcx: MotorcycleConfig = {
   id: "honda-pcx",
   name: "Honda PCX",
+  modelCode: "PCX 160",
   modelPath: "/models/honda-pcx.glb",
   // Authored PBR materials (incl. transmission glass) — skip the SketchUp fix-up
   sanitizeMaterials: false,
@@ -56,5 +57,57 @@ export const hondaPcx: MotorcycleConfig = {
     { id: "forest-green", name: "Forest Green", hex: "#2d5a3d" },
     { id: "desert-tan", name: "Desert Tan", hex: "#7d6a52" },
     { id: "gunmetal-gray", name: "Gunmetal Gray", hex: "#4b4f54" },
+  ],
+  liveries: [
+    {
+      id: "factory-navy",
+      name: "Factory Navy",
+      tag: "OEM",
+      zones: {
+        "main-body": { color: "#1b2a52", finish: "metallic" },
+        "trim-panels": { color: "#7d6a52", finish: "satin" },
+        "seat": { color: "#7a6549", finish: "matte" },
+      },
+    },
+    {
+      id: "stealth",
+      name: "Stealth",
+      tag: "SHOP",
+      zones: {
+        "main-body": { color: "#17171c", finish: "matte" },
+        "trim-panels": { color: "#4b4f54", finish: "satin" },
+        "seat": { color: "#17171c", finish: "matte" },
+      },
+    },
+    {
+      id: "pearl-cruiser",
+      name: "Pearl Cruiser",
+      tag: "SHOP",
+      zones: {
+        "main-body": { color: "#f2f1ec", finish: "gloss" },
+        "trim-panels": { color: "#7d6a52", finish: "satin" },
+        "seat": { color: "#7a6549", finish: "matte" },
+      },
+    },
+    {
+      id: "candy-sport",
+      name: "Candy Sport",
+      tag: "SHOP",
+      zones: {
+        "main-body": { color: "#a01824", finish: "gloss" },
+        "trim-panels": { color: "#17171c", finish: "matte" },
+        "seat": { color: "#17171c", finish: "matte" },
+      },
+    },
+    {
+      id: "forest-tourer",
+      name: "Forest Tourer",
+      tag: "SHOP",
+      zones: {
+        "main-body": { color: "#2d5a3d", finish: "satin" },
+        "trim-panels": { color: "#7d6a52", finish: "satin" },
+        "seat": { color: "#7a6549", finish: "matte" },
+      },
+    },
   ],
 };

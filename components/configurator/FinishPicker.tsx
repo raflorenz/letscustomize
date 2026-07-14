@@ -1,6 +1,6 @@
 "use client";
 
-import { FINISH_LIST } from "@/lib/materials";
+import { FINISH_LIST, formatPrice } from "@/lib/materials";
 import type { FinishId } from "@/types/configurator";
 
 interface FinishPickerProps {
@@ -22,25 +22,36 @@ const FINISH_SWATCH: Record<FinishId, string> = {
 
 export function FinishPicker({ value, onChange }: FinishPickerProps) {
   return (
-    <div className="flex flex-wrap gap-2">
-      {FINISH_LIST.map((finish) => (
-        <button
-          key={finish.id}
-          onClick={() => onChange(finish.id)}
-          title={finish.description}
-          className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
-            value === finish.id
-              ? "border-blue-500 bg-blue-50 font-medium text-blue-700"
-              : "border-gray-200 text-gray-700 hover:bg-gray-50"
-          }`}
-        >
-          <span
-            className="h-4 w-4 rounded-full ring-1 ring-black/10"
-            style={{ background: FINISH_SWATCH[finish.id] }}
-          />
-          {finish.name}
-        </button>
-      ))}
+    <div className="grid grid-cols-2 gap-[7px]">
+      {FINISH_LIST.map((finish) => {
+        const active = value === finish.id;
+        return (
+          <button
+            key={finish.id}
+            onClick={() => onChange(finish.id)}
+            title={finish.description}
+            className={`flex items-center gap-2.5 rounded-[10px] border px-[10px] py-[5px] text-left text-[13px] font-semibold text-ink transition-colors ${
+              active
+                ? "border-accent bg-[var(--fill-active)]"
+                : "border-line bg-transparent hover:bg-[var(--fill-hover)]"
+            }`}
+          >
+            <span
+              className="h-[18px] w-[18px] shrink-0 rounded-full"
+              style={{
+                background: FINISH_SWATCH[finish.id],
+                boxShadow: "inset 0 0 0 1px var(--ring-inset)",
+              }}
+            />
+            <span className="min-w-0 flex-1">
+              {finish.name}
+              <span className="mt-px block font-mono text-[9.5px] font-normal text-dim">
+                {formatPrice(finish.price)} / part
+              </span>
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }

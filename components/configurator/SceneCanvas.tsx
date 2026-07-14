@@ -21,9 +21,21 @@ const MAX_DISTANCE = 6;
 const TARGET = new THREE.Vector3(0, 0.55, 0);
 const CAMERA_POSITION: [number, number, number] = [2.1, 1.0, 2.3];
 
+// Showroom backdrop per theme (canvas clear color / pedestal disc)
+const SCENE_COLORS = {
+  dark: { background: "#0e0f12", ground: "#111216" },
+  light: { background: "#f1efeb", ground: "#f7f5f1" },
+};
+
+const ZOOM_BUTTON_CLASS =
+  "flex h-9 w-9 items-center justify-center rounded-full border border-[var(--btn-border)] bg-panel text-soft shadow-[0_1px_4px_rgba(0,0,0,0.08)] transition-colors hover:bg-[var(--fill-hover)]";
+
 export function SceneCanvas() {
   const motorcycle = useConfiguratorStore((s) => s.currentMotorcycle);
+  const theme = useConfiguratorStore((s) => s.theme);
   const controlsRef = useRef<OrbitControlsImpl>(null);
+
+  const colors = SCENE_COLORS[theme];
 
   const zoomBy = (factor: number) => {
     const controls = controlsRef.current;
@@ -62,7 +74,7 @@ export function SceneCanvas() {
         dpr={[1, 2]}
         gl={{ antialias: true }}
       >
-        <color attach="background" args={["#e9eaec"]} />
+        <color attach="background" args={[colors.background]} />
 
         <ambientLight intensity={0.5} />
         <directionalLight position={[4, 7, 4]} intensity={1.1} />
@@ -103,7 +115,7 @@ export function SceneCanvas() {
         {/* Studio pedestal + grounding shadow */}
         <mesh rotation-x={-Math.PI / 2} position-y={-0.005}>
           <circleGeometry args={[2.4, 64]} />
-          <meshStandardMaterial color="#f6f6f7" roughness={0.95} />
+          <meshStandardMaterial color={colors.ground} roughness={0.95} />
         </mesh>
         <ContactShadows
           position={[0, 0.002, 0]}
@@ -120,7 +132,11 @@ export function SceneCanvas() {
             fallback={FallbackModel ? <FallbackModel /> : null}
           >
             {motorcycle?.modelPath ? (
+              // key forces a remount per bike: r3f only registers pointer
+              // handlers on fresh mounts, and the suspense hide/unhide cycle
+              // during a model swap drops them from the interaction registry
               <MotorcycleModel
+                key={motorcycle.id}
                 modelPath={motorcycle.modelPath}
                 modelYaw={motorcycle.modelYaw}
                 sanitize={motorcycle.sanitizeMaterials !== false}
@@ -144,19 +160,28 @@ export function SceneCanvas() {
         />
       </Canvas>
 
+      {/* Depth vignette over the viewport edges */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 60% at 50% 42%, transparent 55%, var(--vignette) 100%)",
+        }}
+      />
+
       {/* Zoom controls overlay */}
-      <div className="absolute bottom-4 right-4 flex flex-col gap-1.5">
+      <div className="absolute bottom-3 right-3 flex flex-col gap-1.5 lg:bottom-[22px] lg:right-5">
         <button
           onClick={() => zoomBy(0.8)}
           aria-label="Zoom in"
-          className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/90 text-lg font-medium text-gray-700 shadow-sm ring-1 ring-gray-200 transition-colors hover:bg-white"
+          className={`${ZOOM_BUTTON_CLASS} text-[17px]`}
         >
           +
         </button>
         <button
           onClick={() => zoomBy(1.25)}
           aria-label="Zoom out"
-          className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/90 text-lg font-medium text-gray-700 shadow-sm ring-1 ring-gray-200 transition-colors hover:bg-white"
+          className={`${ZOOM_BUTTON_CLASS} text-[17px]`}
         >
           −
         </button>
@@ -164,14 +189,21 @@ export function SceneCanvas() {
           onClick={resetView}
           aria-label="Reset view"
           title="Reset view"
-          className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/90 text-sm text-gray-700 shadow-sm ring-1 ring-gray-200 transition-colors hover:bg-white"
+          className={`${ZOOM_BUTTON_CLASS} text-[13px]`}
         >
           ⟳
         </button>
       </div>
 
-      <p className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-gray-400">
-        Drag to rotate · Scroll to zoom
+      <p
+        className="pointer-events-none absolute bottom-3.5 left-3.5 m-0 whitespace-nowrap font-mono text-[9px] tracking-[0.09em] lg:bottom-[76px] lg:left-1/2 lg:-translate-x-1/2 lg:text-[10px] lg:tracking-[0.07em]"
+        style={{ color: "var(--hint)" }}
+      >
+        <span className="lg:hidden">TAP A PANEL · DRAG · PINCH</span>
+        <span className="hidden lg:inline">
+          DRAG TO ROTATE&nbsp;·&nbsp;SCROLL TO ZOOM&nbsp;·&nbsp;CLICK TO
+          SELECT
+        </span>
       </p>
     </>
   );

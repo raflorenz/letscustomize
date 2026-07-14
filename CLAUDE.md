@@ -21,8 +21,8 @@ Note: on this machine the native SWC binary fails to load and Next falls back to
 This is a Next.js 16 app using the App Router with TypeScript, React 19, and Tailwind CSS v4. It is a 3D motorcycle configurator ("Kustomoto"): users pick a part, then a color and a paint finish, rendered live with react-three-fiber.
 
 - **App Router:** All routes live in `app/` — uses `layout.tsx` / `page.tsx` conventions
-- **Styling:** Tailwind CSS v4 via `@tailwindcss/postcss`; theme tokens defined in `app/globals.css` using `@theme inline`
-- **Fonts:** Geist and Geist Mono loaded via `next/font/google`, exposed as CSS variables `--font-geist-sans` and `--font-geist-mono`
+- **Styling:** Tailwind CSS v4 via `@tailwindcss/postcss`; theme tokens defined in `app/globals.css` using `@theme inline`. The UI implements the "Design B — Showroom" mockup: dark theme by default with a light theme under `html[data-theme="light"]` (toggled by `ThemeToggle`, persisted as `localStorage["kustomoto-theme"]`; a pre-hydration script in `app/layout.tsx` prevents flash, and `SceneCanvas` swaps canvas/pedestal colors to match)
+- **Fonts:** Archivo (display/body, incl. italic) and Geist Mono loaded via `next/font/google`, exposed as CSS variables `--font-archivo` and `--font-geist-mono`
 - **React Compiler:** Enabled in `next.config.ts` (`reactCompiler: true`) with `babel-plugin-react-compiler`
 - **Path alias:** `@/*` maps to project root (configured in `tsconfig.json`)
 
@@ -30,14 +30,15 @@ This is a Next.js 16 app using the App Router with TypeScript, React 19, and Tai
 
 ```
 data/motorcycles/*.ts (MotorcycleConfig), registered in data/motorcycles/index.ts (MOTORCYCLES → picker chips)
-  → stores/configurator-store.ts (zustand: partCustomizations, selectedPartId)
-  → components/configurator/SceneCanvas.tsx (Canvas, lighting, OrbitControls, zoom overlay)
-      → MotorcycleModel.tsx (GLB path)  or  models/* (procedural fallback)
-  → components/configurator/ControlPanel.tsx (part chips / ColorPicker / FinishPicker, BELOW the canvas)
+  → stores/configurator-store.ts (zustand: partCustomizations, selectedPartId, theme, toast)
+  → components/configurator/SceneCanvas.tsx (Canvas, lighting, OrbitControls, zoom overlay, theme-aware bg)
+      → MotorcycleModel.tsx (GLB path; clicking a paintable panel selects its part)  or  models/* (procedural fallback)
+  → components/configurator/Sidebar.tsx (part list / ColorPicker / FinishPicker / shop liveries / price summary)
 ```
 
-- Types live in `types/configurator.ts`. Paint finishes (gloss/matte/metallic/satin/chrome → PBR values) live in `lib/materials.ts`.
-- Layout requirement from the owner: model centered in the viewport, controls below it, zoom in/out available.
+- Types live in `types/configurator.ts`. Paint finishes (gloss/matte/metallic/satin/chrome → PBR values + per-part shop price) live in `lib/materials.ts`.
+- Layout ("Design B — Showroom", implemented July 2026): full-viewport canvas with a collapsible 372px right sidebar on desktop; on mobile (`< lg`) a header + bike-chip row on top and the panel as a fixed-height bottom sheet. Zoom in/out/reset overlay bottom-right, theme toggle bottom-left (desktop) / header (mobile).
+- Each `MotorcycleConfig` may define `liveries` (curated per-part color/finish combos, tagged OEM/SHOP, applied via the store's `applyLivery`) and `modelCode` (viewport subtitle). The sidebar footer shows a per-part price breakdown and total from `FINISHES[...].price`.
 
 ## 3D model conventions
 
@@ -59,7 +60,9 @@ Yamaha NMAX (`data/motorcycles/yamaha-nmax.ts`): primary GLB is "Nmax Motorbike"
 |---|---|---|
 | Body Panels | `paint_body` (was `Mesh_0111.rip`) | complete body kit |
 | Wheel Rims | `paint_rims` + `paint_rims_rear` | front / rear rim |
-| Seat | `paint_seat` (was `Material.023`) | saddle |
+| Seat | `Mesh_0093.rip` | saddle |
+
+Gotcha: `paint_seat` (renamed from `Material.023` by split-nmax-v2.mjs on the assumption it was the saddle) is actually an engine-side cover — it is pinned dark via `materialOverrides`, and the Seat part targets the real saddle material `Mesh_0093.rip` instead.
 
 The windscreen (`Material.002`) exports opaque white — fixed to smoked glass via `materialOverrides`. Fallback (`BUILTIN_MODELS["yamaha-nmax"]` → `NmaxClayModel`): the previous primary, an untextured clay GLB kept at `public/models/yamaha-nmax-clay.glb` (3D Warehouse `667367eb-f8aa-4620-a828-7f1903ec3d22` "Yamaha NMAX" by Ozkar O., processed by `split-nmax.mjs`). It shares the `paint_body` zone name on purpose, and its fixed parts (`BASE_*`/`STD_*`/`UNI_*` + `paint_front`/`paint_rear`) are colored by the same config's `materialOverrides` — keep those entries even though they don't match anything in the primary GLB.
 
