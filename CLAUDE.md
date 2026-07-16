@@ -38,7 +38,7 @@ data/motorcycles/*.ts (MotorcycleConfig), registered in data/motorcycles/index.t
 ```
 
 - Types live in `types/configurator.ts`. Paint finishes (gloss/matte/metallic/satin/chrome → PBR values + per-part shop price) live in `lib/materials.ts`.
-- Layout ("Design B — Showroom", implemented July 2026): full-viewport canvas with a collapsible 372px right sidebar on desktop; on mobile (`< lg`) a header + bike-chip row on top and the panel as a fixed-height bottom sheet. Zoom in/out/reset overlay bottom-right, theme toggle bottom-left (desktop) / header (mobile).
+- Layout ("Design B — Showroom", implemented July 2026): full-viewport canvas with a collapsible 350px right sidebar on desktop/tablet (`≥ md`, 768px); on mobile (`< md`) a header + bike-chip row on top and the panel as a bottom sheet that starts collapsed (tap the drag handle to expand/collapse). Bike picker chips sit top-center of the viewport on `≥ md`. Zoom in/out/reset overlay bottom-right, theme toggle bottom-left (desktop) / header (mobile). Viewports narrower than 1024px start the camera one zoom-step (×1.25) farther out (`initialCameraPosition()` in `SceneCanvas.tsx`).
 - Each `MotorcycleConfig` may define `liveries` (curated per-part color/finish combos, tagged OEM/SHOP, applied via the store's `applyLivery`) and `modelCode` (viewport subtitle). The sidebar footer shows a per-part price breakdown and total from `FINISHES[...].price`.
 
 ## 3D model conventions

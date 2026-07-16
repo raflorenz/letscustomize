@@ -39,7 +39,7 @@ function BikeChips() {
           <button
             key={bike.id}
             onClick={() => setMotorcycle(bike)}
-            className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-[7px] font-mono text-[10px] font-bold tracking-[0.08em] transition-colors ${
+            className={`shrink-0 whitespace-nowrap rounded-full border px-2 py-1.5 font-mono text-[9px] font-bold tracking-[0.06em] transition-colors md:px-3 md:py-[7px] md:text-[10px] md:tracking-[0.08em] ${
               active
                 ? "border-transparent bg-accent text-accent-ink"
                 : "border-line-strong bg-panel text-dim hover:border-accent hover:text-accent"
@@ -59,6 +59,8 @@ export function ConfiguratorPage() {
   const setTheme = useConfiguratorStore((s) => s.setTheme);
   const showToast = useConfiguratorStore((s) => s.showToast);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Mobile bottom sheet starts collapsed so the model gets the space
+  const [sheetExpanded, setSheetExpanded] = useState(false);
 
   useEffect(() => {
     setMotorcycle(MOTORCYCLES[0]);
@@ -77,50 +79,54 @@ export function ConfiguratorPage() {
   };
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-body text-ink lg:flex-row">
+    <div className="flex h-dvh flex-col overflow-hidden bg-body text-ink md:flex-row">
       {/* Mobile header */}
-      <header className="flex shrink-0 items-center justify-between px-[18px] pb-3 pt-4 lg:hidden">
+      <header className="flex shrink-0 items-center justify-between px-[18px] pb-3 pt-4 md:hidden">
         <Brand compact />
         <div className="flex items-center gap-2">
           <ThemeToggle className="flex" />
           <button
             onClick={shareBuild}
-            className="rounded-full border border-line-strong px-[15px] py-2 text-[12.5px] font-semibold text-ink"
+            className="rounded-full border border-accent bg-accent px-[15px] py-2 text-[12.5px] font-bold text-accent-ink"
           >
             Share
           </button>
         </div>
       </header>
 
-      {/* Mobile bike picker */}
-      <div className="flex shrink-0 gap-1.5 overflow-x-auto px-[18px] pb-3 [scrollbar-width:none] lg:hidden">
+      {/* Mobile bike picker — centered single row; "safe center" falls back
+          to start-aligned scrolling when the chips overflow a narrow screen */}
+      <div className="flex shrink-0 gap-1.5 overflow-x-auto px-[18px] pb-3 [justify-content:safe_center] [scrollbar-width:none] md:hidden">
         <BikeChips />
       </div>
 
       {/* 3D viewport */}
-      <div className="relative mx-3.5 min-h-0 min-w-0 flex-1 overflow-hidden rounded-[20px] border border-line bg-panel-alt lg:m-0 lg:rounded-none lg:border-0 lg:bg-transparent">
+      <div className="relative mx-3.5 min-h-0 min-w-0 flex-1 overflow-hidden rounded-[20px] border border-line bg-panel-alt md:m-0 md:rounded-none md:border-0 md:bg-transparent">
         <SceneCanvas />
 
         {/* Bike title overlay — sized to match the sidebar brand block */}
-        <div className="pointer-events-none absolute left-4 top-3.5 lg:left-7 lg:top-6">
-          <div className="text-base font-extrabold italic leading-none tracking-[0.04em] lg:text-[19px]">
+        <div className="pointer-events-none absolute left-4 top-3.5 md:left-7 md:top-6">
+          <div className="text-base font-extrabold italic leading-none tracking-[0.04em] md:text-[19px]">
             {motorcycle?.name.toUpperCase() ?? "LOADING..."}
           </div>
           {motorcycle && (
-            <div className="mt-[3px] font-mono text-[8.5px] tracking-[0.18em] text-dim lg:text-[9px] lg:tracking-[0.2em]">
+            <div className="mt-[3px] font-mono text-[8.5px] tracking-[0.18em] text-dim md:text-[9px] md:tracking-[0.2em]">
               {motorcycle.modelCode ?? motorcycle.name.toUpperCase()} ·{" "}
               {motorcycle.parts.length} PAINT PARTS
             </div>
           )}
         </div>
 
-        {/* Desktop bike picker */}
-        <div className="absolute right-7 top-6 hidden flex-wrap items-center justify-end gap-1.5 lg:flex">
+        {/* Desktop bike picker — single centered row (w-max: an absolutely
+            positioned box otherwise shrinks to the space right of left-1/2
+            and wraps); drops below the bike title on narrower viewports
+            where a top row would overlap it */}
+        <div className="absolute left-1/2 top-[64px] hidden w-max -translate-x-1/2 items-center gap-1.5 md:flex xl:top-6">
           <BikeChips />
         </div>
 
         {/* Desktop theme toggle */}
-        <ThemeToggle className="absolute bottom-[22px] left-7 hidden lg:flex" />
+        <ThemeToggle className="absolute bottom-[22px] left-7 hidden md:flex" />
 
         {/* Reopen tab, shown when the sidebar is collapsed */}
         {!sidebarOpen && (
@@ -128,7 +134,7 @@ export function ConfiguratorPage() {
             onClick={() => setSidebarOpen(true)}
             aria-label="Open panel"
             title="Open panel"
-            className="absolute right-0 top-1/2 z-30 hidden h-14 w-[26px] -translate-y-1/2 items-center justify-center rounded-l-xl border border-r-0 border-[var(--btn-border)] bg-panel text-soft shadow-[-3px_0_12px_rgba(0,0,0,0.18)] lg:flex"
+            className="absolute right-0 top-1/2 z-30 hidden h-14 w-[26px] -translate-y-1/2 items-center justify-center rounded-l-xl border border-r-0 border-[var(--btn-border)] bg-panel text-soft shadow-[-3px_0_12px_rgba(0,0,0,0.18)] md:flex"
           >
             <svg
               width="15"
@@ -148,11 +154,15 @@ export function ConfiguratorPage() {
 
       {/* Control panel — bottom sheet on mobile, collapsible sidebar on desktop */}
       <aside
-        className={`mt-3 flex h-[382px] max-h-[48dvh] shrink-0 flex-col overflow-hidden rounded-t-3xl border-t border-line bg-panel shadow-[0_-10px_30px_rgba(0,0,0,0.25)] lg:mt-0 lg:h-auto lg:max-h-none lg:rounded-none lg:border-l lg:border-t-0 lg:shadow-none lg:transition-[width] lg:duration-300 ${
-          sidebarOpen ? "lg:w-[372px]" : "lg:w-0 lg:border-l-transparent"
-        }`}
+        className={`mt-3 flex shrink-0 flex-col overflow-hidden rounded-t-3xl border-t border-line bg-panel shadow-[0_-10px_30px_rgba(0,0,0,0.25)] transition-[height] duration-300 md:mt-0 md:h-auto md:max-h-none md:rounded-none md:border-l md:border-t-0 md:shadow-none md:transition-[width] ${
+          sheetExpanded ? "h-[300px] max-h-[48dvh]" : "h-[46px]"
+        } ${sidebarOpen ? "md:w-[350px]" : "md:w-0 md:border-l-transparent"}`}
       >
-        <Sidebar onCollapse={() => setSidebarOpen(false)} />
+        <Sidebar
+          onCollapse={() => setSidebarOpen(false)}
+          sheetExpanded={sheetExpanded}
+          onToggleSheet={() => setSheetExpanded((e) => !e)}
+        />
       </aside>
 
       <Toast />
