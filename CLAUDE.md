@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Analyze a GLB's paintable islands:** `node scripts/analyze-adv150.mjs <input.glb>` (ADV-specific) or `node scripts/analyze-paint.mjs <input.glb> <materialName>` (any model, world coords)
 - **List every mesh's bbox/material in a GLB:** `node scripts/report-meshes.mjs <input.glb>`
 - **Identify paint zones visually:** `node scripts/rainbow-debug.mjs <in.glb> <out.glb> [topN]` — recolors the N biggest materials with distinct colors and prints the legend; view the output in the app
-- **Split a source GLB into paint zones:** `node scripts/split-adv150.mjs`, `split-nmax.mjs` / `split-aerox.mjs` (fallback models), `split-nmax-v2.mjs` / `split-aerox-v2.mjs` / `split-pcx.mjs` (Sketchfab primaries; aerox-v2 and pcx also decimate via meshoptimizer) — `node scripts/split-<id>.mjs <source.gltf|glb> public/models/<id>.glb`
+- **Split a source GLB into paint zones:** `node scripts/split-adv150.mjs`, `split-nmax.mjs` / `split-aerox.mjs` (fallback models), `split-nmax-v2.mjs` / `split-aerox-v2.mjs` / `split-pcx.mjs` (Sketchfab primaries; aerox-v2 and pcx also decimate via meshoptimizer) — `node scripts/split-<id>.mjs <source.gltf|glb> public/models/<id>.glb`. ADV only: `node scripts/split-adv150-accents.mjs public/models/honda-adv-150.glb` is a SECOND stage that runs on the processed GLB (after split-adv150.mjs + compress), splitting `paint_rims` out of `<auto>17` and `paint_center` out of `[Color M04]` by connected components in world coords — re-run it if the model is ever regenerated from source
 - **Meshopt-compress the shipped GLBs:** `node scripts/compress-models.mjs [file.glb ...]` (default: all of `public/models/`) — run after any split script; idempotent, lossless on top of `quantize()` (typically halves the file). drei's `useGLTF` wires the decoder automatically; the analysis scripts above read compressed files fine.
 
 Note: on this machine the native SWC binary fails to load and Next falls back to WASM, so the first compile of each page is slow (up to ~1 min). Subsequent compiles are fast.
@@ -52,8 +52,12 @@ Current ADV 150 mapping (`data/motorcycles/honda-adv-150.ts`):
 | Part | Material names |
 |---|---|
 | Front Fairing | `paint_front`, `<auto>8` |
+| Center Panels (gray mid panels between fairing and side panels) | `paint_center` |
 | Side Panels (incl. rear cowl) | `paint_side`, `paint_rear` |
-| Panel Accents (incl. rims) | `<auto>17` |
+| Panel Accents | `<auto>17` |
+| Wheel Rims | `paint_rims` |
+
+`paint_center` and `paint_rims` are split from `[Color M04]` / `<auto>17` by `scripts/split-adv150-accents.mjs` (see Commands). The leftover `[Color M04]` (small trim bits near the rear wheel, left side) stays pinned gray via `materialOverrides` — keep that entry.
 
 Yamaha NMAX (`data/motorcycles/yamaha-nmax.ts`): primary GLB is "Nmax Motorbike" by muhecsad from **Sketchfab** (uid `b4754cbe95fb4c39be1524300e93833b`, **CC-BY-NC-SA-4.0** — credit required, NO commercial use; credit text lives in the data file). It has properly-authored PBR materials, so the config sets `sanitizeMaterials: false` — the SketchUp fix-up pass would destroy them. Parts are cleanly material-separated (verified with `scripts/rainbow-debug.mjs`); `split-nmax-v2.mjs` only renames materials:
 
