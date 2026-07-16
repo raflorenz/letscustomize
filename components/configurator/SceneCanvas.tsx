@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, useCallback, useEffect, useRef } from "react";
 import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import {
@@ -22,6 +22,18 @@ const MIN_DISTANCE = 1.4;
 const MAX_DISTANCE = 6;
 const TARGET = new THREE.Vector3(0, 0.55, 0);
 const CAMERA_POSITION: [number, number, number] = [2.1, 1.0, 2.3];
+// Mobile/tablet viewports start one zoom-step farther out (same factor as
+// the − button) so the bike clears the surrounding UI.
+const COMPACT_ZOOM_OUT = 1.25;
+
+function initialCameraPosition(): [number, number, number] {
+  const offset = new THREE.Vector3(...CAMERA_POSITION).sub(TARGET);
+  if (typeof window !== "undefined" && window.innerWidth < 1024) {
+    offset.multiplyScalar(COMPACT_ZOOM_OUT);
+  }
+  const position = TARGET.clone().add(offset);
+  return [position.x, position.y, position.z];
+}
 
 // Showroom backdrop per theme (canvas clear color / pedestal disc)
 const SCENE_COLORS = {
@@ -37,6 +49,9 @@ export function SceneCanvas() {
   const theme = useConfiguratorStore((s) => s.theme);
   const modelLoaded = useConfiguratorStore((s) => s.modelLoaded);
   const controlsRef = useRef<OrbitControlsImpl>(null);
+  const initialCameraRef = useRef<[number, number, number] | null>(null);
+  initialCameraRef.current ??= initialCameraPosition();
+  const initialCamera = initialCameraRef.current;
 
   // Once the current bike is on screen, warm the other bikes' GLBs during
   // idle time so switching is instant. useGLTF.preload dedupes via the
@@ -59,7 +74,7 @@ export function SceneCanvas() {
 
   const colors = SCENE_COLORS[theme];
 
-  const zoomBy = (factor: number) => {
+  const zoomBy = useCallback((factor: number) => {
     const controls = controlsRef.current;
     if (!controls) return;
     const camera = controls.object;
@@ -71,14 +86,29 @@ export function SceneCanvas() {
     );
     camera.position.copy(controls.target).add(offset.setLength(length));
     controls.update();
-  };
+  }, []);
+
+  // Step the zoom when the viewport crosses the compact breakpoint after
+  // mount (window resize, devtools device mode, tablet rotation) — the
+  // camera prop only applies the initial position once.
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    const onChange = (e: MediaQueryListEvent) => {
+      initialCameraRef.current = initialCameraPosition();
+      zoomBy(e.matches ? COMPACT_ZOOM_OUT : 1 / COMPACT_ZOOM_OUT);
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, [zoomBy]);
 
   // controls.reset() restores the state saved at construction, before the
   // target prop was applied — restore the actual initial view instead.
   const resetView = () => {
     const controls = controlsRef.current;
     if (!controls) return;
-    controls.object.position.set(...CAMERA_POSITION);
+    controls.object.position.set(
+      ...(initialCameraRef.current ?? CAMERA_POSITION)
+    );
     controls.target.copy(TARGET);
     controls.update();
   };
@@ -92,7 +122,7 @@ export function SceneCanvas() {
   return (
     <>
       <Canvas
-        camera={{ position: CAMERA_POSITION, fov: 40 }}
+        camera={{ position: initialCamera, fov: 40 }}
         dpr={[1, 2]}
         gl={{ antialias: true }}
       >
@@ -192,7 +222,7 @@ export function SceneCanvas() {
       />
 
       {/* Zoom controls overlay */}
-      <div className="absolute bottom-3 right-3 flex flex-col gap-1.5 lg:bottom-[22px] lg:right-5">
+      <div className="absolute bottom-3 right-3 flex flex-col gap-1.5 md:bottom-[22px] md:right-5">
         <button
           onClick={() => zoomBy(0.8)}
           aria-label="Zoom in"
@@ -218,11 +248,11 @@ export function SceneCanvas() {
       </div>
 
       <p
-        className="pointer-events-none absolute bottom-3.5 left-3.5 m-0 whitespace-nowrap font-mono text-[9px] tracking-[0.09em] lg:bottom-[76px] lg:left-1/2 lg:-translate-x-1/2 lg:text-[10px] lg:tracking-[0.07em]"
+        className="pointer-events-none absolute bottom-3.5 left-3.5 m-0 whitespace-nowrap font-mono text-[9px] tracking-[0.09em] md:bottom-[76px] md:left-1/2 md:-translate-x-1/2 md:text-[10px] md:tracking-[0.07em]"
         style={{ color: "var(--hint)" }}
       >
-        <span className="lg:hidden">TAP A PANEL · DRAG · PINCH</span>
-        <span className="hidden lg:inline">
+        <span className="md:hidden">TAP A PANEL · DRAG · PINCH</span>
+        <span className="hidden md:inline">
           DRAG TO ROTATE&nbsp;·&nbsp;SCROLL TO ZOOM&nbsp;·&nbsp;CLICK TO
           SELECT
         </span>

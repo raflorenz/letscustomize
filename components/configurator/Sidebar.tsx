@@ -55,9 +55,13 @@ function SectionHeading({
 interface SidebarProps {
   /** Collapse the sidebar (desktop only) */
   onCollapse: () => void;
+  /** Whether the mobile bottom sheet is expanded */
+  sheetExpanded: boolean;
+  /** Toggle the mobile bottom sheet */
+  onToggleSheet: () => void;
 }
 
-export function Sidebar({ onCollapse }: SidebarProps) {
+export function Sidebar({ onCollapse, sheetExpanded, onToggleSheet }: SidebarProps) {
   const {
     motorcycle,
     selectedPartId,
@@ -94,9 +98,9 @@ export function Sidebar({ onCollapse }: SidebarProps) {
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-col lg:w-[372px]">
+    <div className="flex h-full min-h-0 flex-col md:w-[350px]">
       {/* Desktop header */}
-      <div className="hidden items-center justify-between border-b border-line px-[22px] pb-4 pt-5 lg:flex">
+      <div className="hidden items-center justify-between border-b border-line px-[22px] pb-4 pt-5 md:flex">
         <Brand />
         <div className="flex shrink-0 items-center gap-2">
           <button
@@ -127,13 +131,24 @@ export function Sidebar({ onCollapse }: SidebarProps) {
         </div>
       </div>
 
-      {/* Mobile drag handle */}
-      <div className="flex shrink-0 justify-center pb-1 pt-2.5 lg:hidden">
-        <div className="h-[5px] w-[38px] rounded-full bg-line-strong" />
-      </div>
+      {/* Mobile drag handle / sheet toggle */}
+      <button
+        onClick={onToggleSheet}
+        aria-expanded={sheetExpanded}
+        aria-label={sheetExpanded ? "Collapse controls" : "Expand controls"}
+        className="flex shrink-0 flex-col items-center gap-1 pb-1.5 pt-2.5 md:hidden"
+      >
+        <span className="h-[5px] w-[38px] rounded-full bg-line-strong" />
+        {!sheetExpanded && (
+          <span className="font-mono text-[9.5px] tracking-[0.14em] text-dim">
+            TAP TO CUSTOMIZE ·{" "}
+            <span className="text-accent">{formatPrice(total)}</span>
+          </span>
+        )}
+      </button>
 
       {/* Scrollable sections */}
-      <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-[18px] py-3 lg:px-[22px] lg:py-5">
+      <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-[18px] py-3 md:px-[22px] md:py-5">
         <section>
           <SectionHeading
             index="01"
@@ -265,8 +280,8 @@ export function Sidebar({ onCollapse }: SidebarProps) {
       </div>
 
       {/* Build summary footer */}
-      <div className="shrink-0 border-t border-line bg-panel-alt px-[18px] pb-4 pt-3 lg:px-[22px] lg:pb-[18px] lg:pt-4">
-        <div className="mb-3 hidden flex-col gap-1.5 lg:flex">
+      <div className="shrink-0 border-t border-line bg-panel-alt px-[18px] pb-4 pt-3 md:px-[22px] md:pb-[18px] md:pt-4">
+        <div className="mb-3 hidden flex-col gap-1.5 md:flex">
           {motorcycle.parts.map((part) => {
             const finish = FINISHES[partCustomizations[part.id].finish];
             return (
@@ -295,7 +310,7 @@ export function Sidebar({ onCollapse }: SidebarProps) {
           </div>
         </div>
         <div className="flex items-center gap-2.5">
-          <div className="flex flex-col lg:hidden">
+          <div className="flex flex-col md:hidden">
             <span className="whitespace-nowrap font-mono text-[8.5px] tracking-[0.14em] text-dim">
               PAINT ESTIMATE
             </span>
@@ -312,7 +327,7 @@ export function Sidebar({ onCollapse }: SidebarProps) {
           <button
             onClick={resetToDefaults}
             title="Reset to factory"
-            className="hidden rounded-[10px] border border-line-strong px-3.5 py-3 text-[13px] font-semibold text-dim transition-colors hover:bg-[var(--fill-hover)] lg:block"
+            className="hidden rounded-[10px] border border-line-strong px-3.5 py-3 text-[13px] font-semibold text-dim transition-colors hover:bg-[var(--fill-hover)] md:block"
           >
             Reset
           </button>
