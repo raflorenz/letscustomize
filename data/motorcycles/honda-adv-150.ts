@@ -10,7 +10,8 @@ export const hondaAdv150: MotorcycleConfig = {
   materialOverrides: {
     // Bulk mesh: engine, tires, seat, black plastics
     "<auto>": { color: "#232327", roughness: 0.75, metalness: 0.15 },
-    // Mid-gray trim
+    // Small gray trim bits near the rear wheel — the big center panels were
+    // split off to paint_center by scripts/split-adv150-accents.mjs
     "[Color M04]": { color: "#6a6d72", roughness: 0.4, metalness: 0.6 },
     // Silver mechanical bits
     "<auto>9": { color: "#9ea1a6", roughness: 0.32, metalness: 0.8 },
@@ -36,6 +37,17 @@ export const hondaAdv150: MotorcycleConfig = {
       category: "fairing",
     },
     {
+      id: "center-panels",
+      label: "Center Panels",
+      meshNames: [],
+      // gray mid panels between the front fairing and side panels,
+      // split from [Color M04] by scripts/split-adv150-accents.mjs
+      materialNames: ["paint_center"],
+      defaultColor: "#4b4f54",
+      defaultFinish: "gloss",
+      category: "body",
+    },
+    {
       id: "side-panels",
       label: "Side Panels",
       meshNames: [],
@@ -55,6 +67,16 @@ export const hondaAdv150: MotorcycleConfig = {
       defaultFinish: "gloss",
       category: "fairing",
     },
+    {
+      id: "wheel-rims",
+      label: "Wheel Rims",
+      meshNames: [],
+      // split from <auto>17 by scripts/split-adv150-accents.mjs
+      materialNames: ["paint_rims"],
+      defaultColor: "#4b4f54",
+      defaultFinish: "gloss",
+      category: "accent",
+    },
   ],
   colorPresets: [
     { id: "advance-red", name: "Advance Red", hex: "#b02330" },
@@ -73,8 +95,10 @@ export const hondaAdv150: MotorcycleConfig = {
       tag: "OEM",
       zones: {
         "fairing-front": { color: "#b02330", finish: "gloss" },
+        "center-panels": { color: "#4b4f54", finish: "gloss" },
         "side-panels": { color: "#b02330", finish: "gloss" },
         "panel-accents": { color: "#a8a9ad", finish: "gloss" },
+        "wheel-rims": { color: "#4b4f54", finish: "gloss" },
       },
     },
     {
@@ -83,8 +107,10 @@ export const hondaAdv150: MotorcycleConfig = {
       tag: "SHOP",
       zones: {
         "fairing-front": { color: "#17171c", finish: "matte" },
+        "center-panels": { color: "#17171c", finish: "matte" },
         "side-panels": { color: "#17171c", finish: "matte" },
         "panel-accents": { color: "#4b4f54", finish: "satin" },
+        "wheel-rims": { color: "#17171c", finish: "matte" },
       },
     },
     {
@@ -93,8 +119,10 @@ export const hondaAdv150: MotorcycleConfig = {
       tag: "SHOP",
       zones: {
         "fairing-front": { color: "#cc5500", finish: "gloss" },
+        "center-panels": { color: "#17171c", finish: "matte" },
         "side-panels": { color: "#17171c", finish: "matte" },
         "panel-accents": { color: "#f2f1ec", finish: "gloss" },
+        "wheel-rims": { color: "#cc5500", finish: "gloss" },
       },
     },
     {
@@ -103,8 +131,10 @@ export const hondaAdv150: MotorcycleConfig = {
       tag: "SHOP",
       zones: {
         "fairing-front": { color: "#a8a9ad", finish: "chrome" },
+        "center-panels": { color: "#1b2a52", finish: "metallic" },
         "side-panels": { color: "#1b2a52", finish: "metallic" },
         "panel-accents": { color: "#c8cbd0", finish: "chrome" },
+        "wheel-rims": { color: "#c8cbd0", finish: "chrome" },
       },
     },
     {
@@ -113,8 +143,10 @@ export const hondaAdv150: MotorcycleConfig = {
       tag: "SHOP",
       zones: {
         "fairing-front": { color: "#2d5a3d", finish: "satin" },
+        "center-panels": { color: "#17171c", finish: "matte" },
         "side-panels": { color: "#f2f1ec", finish: "gloss" },
         "panel-accents": { color: "#17171c", finish: "matte" },
+        "wheel-rims": { color: "#17171c", finish: "matte" },
       },
     },
   ],
