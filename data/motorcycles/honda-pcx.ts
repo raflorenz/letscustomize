@@ -47,6 +47,17 @@ export const hondaPcx: MotorcycleConfig = {
       defaultFinish: "matte",
       category: "accent",
     },
+    {
+      // Front / rear rim, split out of preto_metalico / preto_metalico_2
+      // by scripts/split-pcx-rims.mjs (second stage on the processed GLB)
+      id: "wheel-rims",
+      label: "Wheel Rims",
+      meshNames: [],
+      materialNames: ["paint_rims", "paint_rims_rear"],
+      defaultColor: "#1b2a52",
+      defaultFinish: "metallic",
+      category: "accent",
+    },
   ],
   colorPresets: [
     { id: "deep-navy", name: "Deep Navy", hex: "#1b2a52" },
@@ -67,6 +78,7 @@ export const hondaPcx: MotorcycleConfig = {
         "main-body": { color: "#1b2a52", finish: "metallic" },
         "trim-panels": { color: "#7d6a52", finish: "satin" },
         "seat": { color: "#7a6549", finish: "matte" },
+        "wheel-rims": { color: "#1b2a52", finish: "metallic" },
       },
     },
     {
@@ -77,6 +89,7 @@ export const hondaPcx: MotorcycleConfig = {
         "main-body": { color: "#17171c", finish: "matte" },
         "trim-panels": { color: "#4b4f54", finish: "satin" },
         "seat": { color: "#17171c", finish: "matte" },
+        "wheel-rims": { color: "#17171c", finish: "matte" },
       },
     },
     {
@@ -87,6 +100,7 @@ export const hondaPcx: MotorcycleConfig = {
         "main-body": { color: "#f2f1ec", finish: "gloss" },
         "trim-panels": { color: "#7d6a52", finish: "satin" },
         "seat": { color: "#7a6549", finish: "matte" },
+        "wheel-rims": { color: "#a8a9ad", finish: "metallic" },
       },
     },
     {
@@ -97,6 +111,7 @@ export const hondaPcx: MotorcycleConfig = {
         "main-body": { color: "#a01824", finish: "gloss" },
         "trim-panels": { color: "#17171c", finish: "matte" },
         "seat": { color: "#17171c", finish: "matte" },
+        "wheel-rims": { color: "#a01824", finish: "gloss" },
       },
     },
     {
@@ -107,6 +122,7 @@ export const hondaPcx: MotorcycleConfig = {
         "main-body": { color: "#2d5a3d", finish: "satin" },
         "trim-panels": { color: "#7d6a52", finish: "satin" },
         "seat": { color: "#7a6549", finish: "matte" },
+        "wheel-rims": { color: "#17171c", finish: "satin" },
       },
     },
   ],
