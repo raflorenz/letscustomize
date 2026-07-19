@@ -30,8 +30,9 @@ export const hondaAdv150: MotorcycleConfig = {
       id: "fairing-front",
       label: "Front Fairing",
       meshNames: [],
-      // paint_* materials are created by scripts/split-adv150.mjs
-      materialNames: ["paint_front", "<auto>8"],
+      // paint_* materials are created by scripts/split-adv150.mjs;
+      // paint_fender (front fender) by scripts/split-adv150-fender.mjs
+      materialNames: ["paint_front", "<auto>8", "paint_fender"],
       defaultColor: "#b02330",
       defaultFinish: "gloss",
       category: "fairing",
