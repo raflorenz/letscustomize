@@ -9,9 +9,11 @@
 //   Body           -> paint_body (all painted panels incl. front fender/tail)
 //   plastic_marrom -> paint_trim (tan floorboard / tunnel / inner shield)
 //   banco          -> paint_seat
-// Wheel rims are fused into "preto_metalico" (61k tris of assorted black
-// metallic hardware) and stay fixed. The Brazilian license plate and the
-// floating logo card are deleted.
+// The Brazilian license plate and the floating logo card are deleted.
+//
+// After this script + compress-models.mjs, run scripts/split-pcx-rims.mjs
+// (second stage on the processed GLB) to give the front/rear rim primitives
+// their own paint_rims / paint_rims_rear materials.
 //
 // Source is ~445k tris / 16 MB — weld + meshopt-simplify + quantize. Load
 // with sanitizeMaterials: false (keeps the KHR transmission glass intact).

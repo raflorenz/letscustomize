@@ -246,7 +246,7 @@ export function Sidebar({ onCollapse, sheetExpanded, onToggleSheet }: SidebarPro
                     key={livery.id}
                     onClick={() => {
                       applyLivery(livery);
-                      showToast(`${livery.name} livery applied`);
+                      showToast(`${livery.name} setup applied`);
                     }}
                     className={`flex w-full items-center gap-3 rounded-[10px] border px-[13px] py-2.5 text-left text-[13px] font-semibold text-ink transition-colors ${
                       isCurrent
